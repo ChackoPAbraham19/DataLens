@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, field_validator
 
 from services.profiler import run_profile
-from utils.file_handler import cleanup_temp_files, TEMP_DIR
+from utils.file_handler import schedule_cleanup, TEMP_DIR
 from utils.kaggle_client import (
     download_kaggle_dataset,
     find_csvs_in_dir,
@@ -183,7 +183,8 @@ async def ingest_kaggle_dataset(
     )
 
     # --- Schedule cleanup after 1 hour ---
-    background_tasks.add_task(cleanup_temp_files, job_dir=job_dir, delay_seconds=3600)
+    # Fire-and-forget cleanup (daemon thread, not a BackgroundTask)
+    schedule_cleanup(job_dir=job_dir, delay_seconds=3600)
 
     return JSONResponse(
         status_code=202,

@@ -9,7 +9,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 
 from services.profiler import run_profile
-from utils.file_handler import save_temp_file, cleanup_temp_files, TEMP_DIR
+from utils.file_handler import save_temp_file, schedule_cleanup, TEMP_DIR
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
@@ -149,7 +149,8 @@ async def upload_file(
     background_tasks.add_task(run_profile, job_id=job_id, csv_path=csv_path)
 
     # --- Schedule cleanup after 1 hour ---
-    background_tasks.add_task(cleanup_temp_files, job_dir=job_dir, delay_seconds=3600)
+    # Fire-and-forget cleanup (daemon thread, not a BackgroundTask)
+    schedule_cleanup(job_dir=job_dir, delay_seconds=3600)
 
     return JSONResponse(
         status_code=202,
