@@ -196,7 +196,7 @@ tr:hover { background: var(--surface2); }
 <script>
 const API = window.location.origin.includes('localhost') || window.location.origin.includes('127.0.0.1')
   ? window.location.origin.replace(/:\d+/, ':8000')
-  : '/api';
+  : window.location.origin;
 const WS = API.replace(/^http/, 'ws');
 
 // --- Tabs ---

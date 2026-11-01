@@ -7,7 +7,7 @@ import httpx
 
 ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-MODEL = "claude-sonnet-4-20250514"
+MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5-5")
 
 
 # ---------------------------------------------------------------------------
